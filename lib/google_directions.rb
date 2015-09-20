@@ -20,20 +20,21 @@ class GoogleDirections
   attr_reader :status, :doc, :xml, :origin, :destination, :options
 
   def initialize(origin, destination, opts=DEFAULT_OPTIONS)
-    @origin = origin
+    @origin      = origin
     @destination = destination
-    @options = opts.merge({:origin => @origin, :destination => @destination})
-    path = BASE_PATH + '?' + querify(@options)
-    @url = BASE_URL + sign_path(path, @options)
-    @xml = open(@url).read
-    @doc = Nokogiri::XML(@xml)
-    @status = @doc.css('status').text
+    @options     = opts.merge({:origin => @origin, :destination => @destination})
+    path         = BASE_PATH + '?' + querify(@options)
+    @url         = BASE_URL + sign_path(path, @options)
+    @xml         = open(@url).read
+    @doc         = Nokogiri::XML(@xml)
+    @status      = @doc.css('status').text
   end
 
   def xml_call
     @url
   end
 
+  # returns the drive time in minutes. returns 0 if the request was unsuccessful
   def drive_time_in_minutes
     unless successful?
       drive_time = 0
