@@ -63,6 +63,7 @@ class GoogleDirections
     end
   end
 
+  # returns the distance in miles between the origin and the destination.
   def distance_in_miles
     unless successful?
       distance_in_miles = 0
@@ -73,6 +74,7 @@ class GoogleDirections
     end
   end
 
+  # returns true if the status is successful
   def successful?
     @status == "OK"
   end
