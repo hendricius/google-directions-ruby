@@ -8,7 +8,7 @@ require 'base64'
 
 class GoogleDirections
   VERSION   = '0.1.6.5'
-  BASE_URL  = 'http://maps.googleapis.com'
+  BASE_URL  = 'https://maps.googleapis.com'
   BASE_PATH = '/maps/api/directions/xml'
   DEFAULT_OPTIONS = {
     :language => :en,
@@ -20,20 +20,21 @@ class GoogleDirections
   attr_reader :status, :doc, :xml, :origin, :destination, :options
 
   def initialize(origin, destination, opts=DEFAULT_OPTIONS)
-    @origin = origin
+    @origin      = origin
     @destination = destination
-    @options = opts.merge({:origin => @origin, :destination => @destination})
-    path = BASE_PATH + '?' + querify(@options)
-    @url = BASE_URL + sign_path(path, @options)
-    @xml = open(@url).read
-    @doc = Nokogiri::XML(@xml)
-    @status = @doc.css('status').text
+    @options     = opts.merge({:origin => @origin, :destination => @destination})
+    path         = BASE_PATH + '?' + querify(@options)
+    @url         = BASE_URL + sign_path(path, @options)
+    @xml         = open(@url).read
+    @doc         = Nokogiri::XML(@xml)
+    @status      = @doc.css('status').text
   end
 
   def xml_call
     @url
   end
 
+  # returns the drive time in minutes. returns 0 if the request was unsuccessful
   def drive_time_in_minutes
     unless successful?
       drive_time = 0
@@ -62,6 +63,7 @@ class GoogleDirections
     end
   end
 
+  # returns the distance in miles between the origin and the destination.
   def distance_in_miles
     unless successful?
       distance_in_miles = 0
@@ -72,6 +74,7 @@ class GoogleDirections
     end
   end
 
+  # returns true if the status is successful
   def successful?
     @status == "OK"
   end
